@@ -10,6 +10,7 @@ SRS_COLUMNS = {
     "interval_days": "INTEGER NOT NULL DEFAULT 0",
     "repetitions": "INTEGER NOT NULL DEFAULT 0",
     "next_review": "DATETIME",
+    "ipa": "TEXT NOT NULL DEFAULT ''",
 }
 
 

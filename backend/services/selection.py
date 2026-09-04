@@ -19,7 +19,7 @@ def load_words():
                  "mode": w.mode, "sub_list": w.sub_list, "rank": w.rank,
                  "zipf": w.zipf, "definition_en": w.definition_en,
                  "translation_es": w.translation_es, "examples": w.examples,
-                 "next_review": w.next_review}
+                 "ipa": w.ipa, "next_review": w.next_review}
                 for w in words
             ]
 

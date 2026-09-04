@@ -16,6 +16,7 @@ class Word(SQLModel, table=True):
     definition_en: str = ""
     translation_es: str = ""
     examples: str = "[]"  # JSON array string
+    ipa: str = ""  # phonetic transcription (IPA)
 
     # SM-2 spaced repetition state
     easiness_factor: float = 2.5

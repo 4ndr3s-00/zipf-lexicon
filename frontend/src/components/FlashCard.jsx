@@ -14,6 +14,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { MODES } from "../config/modes";
+import SpeechEvaluator from "./SpeechEvaluator";
 
 const CAT_LABELS = {
   n: "noun",
@@ -236,11 +237,21 @@ export default function FlashCard({
         </div>
 
         {/* Word + audio */}
-        <div className="flex items-center gap-3 mb-4">
+        <div className="flex items-center gap-3 mb-1">
           <h2 className="text-4xl font-bold text-white tracking-tight">
             {word.word}
           </h2>
           <AudioButton text={word.word} />
+        </div>
+        {word.ipa && (
+          <div className="text-sm font-mono text-neutral-500 mb-3">
+            /{word.ipa}/
+          </div>
+        )}
+
+        {/* Speech evaluator */}
+        <div className="mb-2">
+          <SpeechEvaluator text={word.word} />
         </div>
 
         {/* Definition */}
