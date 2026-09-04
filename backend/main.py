@@ -1,3 +1,6 @@
+import json
+from pathlib import Path
+
 from fastapi import FastAPI, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -9,6 +12,8 @@ from services.selection import load_words, pick_weighted, mark_reviewed
 from services.srs import review
 
 app = FastAPI(title="Zipf Lexicon API")
+
+EXPRESSIONS_PATH = Path(__file__).resolve().parent / "data" / "tech_phrasal_verbs.json"
 
 app.add_middleware(
     CORSMiddleware,
@@ -70,8 +75,7 @@ def word_review(
 
 
 @app.get("/api/words/search")
-def word_search(
-    q: str = Query(..., min_length=1),
+def word_search(    q: str = Query(..., min_length=1),
     mode: str = Query("cotidiano", pattern="^(cotidiano|tecnico)$"),
     limit: int = Query(20, ge=1, le=100),
     session: Session = Depends(get_session),
@@ -98,6 +102,16 @@ def enrichment_status(session: Session = Depends(get_session)):
         "pending": total - enriched,
         "percent": round(enriched / total * 100, 1) if total else 0,
     }
+
+
+@app.get("/api/expressions")
+def expressions(category: str | None = Query(None)):
+    if not EXPRESSIONS_PATH.exists():
+        raise HTTPException(status_code=404, detail="Expressions dataset not found")
+    data = json.loads(EXPRESSIONS_PATH.read_text(encoding="utf-8"))
+    if category:
+        data = [e for e in data if e.get("category") == category]
+    return data
 
 
 @app.get("/api/words/{word_id}")

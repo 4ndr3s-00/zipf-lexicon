@@ -3,6 +3,8 @@ import Shell from "./Shell";
 import FlashCard from "./components/FlashCard";
 import SearchModal from "./components/SearchModal";
 import BookmarksModal from "./components/BookmarksModal";
+import StandupSimulator from "./components/StandupSimulator";
+import { Mic, MessagesSquare } from "lucide-react";
 import {
   getBookmarked,
   isBookmarked,
@@ -15,6 +17,7 @@ const API = "http://localhost:8001/api/words/next";
 
 function App() {
   const [mode, setMode] = useState("tecnico");
+  const [view, setView] = useState("study"); // "study" | "standup"
   const [word, setWord] = useState(null);
   const [loading, setLoading] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -45,10 +48,10 @@ function App() {
     fetchWord(mode);
   }, [mode]);
 
-  // Space / ArrowRight → next word (only when modals are closed)
+  // Space / ArrowRight → next word (only when studying and modals are closed)
   useEffect(() => {
     const handler = (e) => {
-      if (searchOpen || bookmarksOpen) return;
+      if (searchOpen || bookmarksOpen || view !== "study") return;
       if (e.code === "Space" || e.code === "ArrowRight") {
         e.preventDefault();
         fetchWord();
@@ -56,7 +59,7 @@ function App() {
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [fetchWord, searchOpen, bookmarksOpen]);
+  }, [fetchWord, searchOpen, bookmarksOpen, view]);
 
   // Global ⌘K / Ctrl+K → open search
   useEffect(() => {
@@ -112,9 +115,9 @@ function App() {
     [word, loading, fetchWord],
   );
 
-  // Keys 1-4 -> SM-2 grade (only when modals are closed)
+  // Keys 1-4 -> SM-2 grade (only when studying and modals are closed)
   useEffect(() => {
-    if (searchOpen || bookmarksOpen) return;
+    if (searchOpen || bookmarksOpen || view !== "study") return;
     const handler = (e) => {
       const g = parseInt(e.key, 10);
       if (!Number.isNaN(g) && g >= 1 && g <= 4) {
@@ -123,7 +126,7 @@ function App() {
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [searchOpen, bookmarksOpen, reviewWord]);
+  }, [searchOpen, bookmarksOpen, view, reviewWord]);
 
   return (
     <Shell
@@ -133,46 +136,77 @@ function App() {
       bookmarksCount={bookmarksCount}
       onBookmarksOpen={() => setBookmarksOpen(true)}
     >
-      {word && (
-        <FlashCard
-          key={`${word.id}-${bkTick}-${lrTick}`}
-          word={word}
-          mode={mode}
-          bookmarked={isBookmarked(word.id)}
-          learned={isLearned(word.id)}
-          onToggleBookmark={handleToggleBookmark}
-          onToggleLearned={handleToggleLearned}
-          onReview={reviewWord}
-        />
-      )}
-
-      {/* SM-2 grading bar */}
-      <div className="mt-6 grid grid-cols-4 gap-2">
-        {[
-          { g: 1, label: "Again", kbd: "1", cls: "text-red-400 border-red-500/30 hover:border-red-400/60" },
-          { g: 2, label: "Hard", kbd: "2", cls: "text-amber-accent border-amber-accent/30 hover:border-amber-accent/60" },
-          { g: 3, label: "Good", kbd: "3", cls: "text-emerald-accent border-emerald-accent/30 hover:border-emerald-accent/60" },
-          { g: 4, label: "Easy", kbd: "4", cls: "text-cyan-400 border-cyan-400/30 hover:border-cyan-400/60" },
-        ].map((b) => (
-          <button
-            key={b.g}
-            onClick={() => reviewWord(b.g)}
-            disabled={loading}
-            className={`flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-lg border bg-white/[0.03] text-sm font-medium transition-all cursor-pointer disabled:opacity-40 hover:bg-white/[0.06] ${b.cls}`}
-          >
-            <span>{b.label}</span>
-            <kbd className="text-[10px] px-1 py-px border border-white/10 rounded text-neutral-600">{b.kbd}</kbd>
-          </button>
-        ))}
+      {/* View switcher */}
+      <div className="flex items-center bg-white/5 rounded-lg border border-white/10 p-0.5 mb-5 w-fit">
+        <button
+          onClick={() => setView("study")}
+          className={`px-3 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer ${
+            view === "study" ? "text-white bg-white/10" : "text-neutral-500 hover:text-neutral-300"
+          }`}
+        >
+          <span className="flex items-center gap-1.5">
+            <Mic className="w-3.5 h-3.5" /> Flashcards
+          </span>
+        </button>
+        <button
+          onClick={() => setView("standup")}
+          className={`px-3 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer ${
+            view === "standup" ? "text-white bg-white/10" : "text-neutral-500 hover:text-neutral-300"
+          }`}
+        >
+          <span className="flex items-center gap-1.5">
+            <MessagesSquare className="w-3.5 h-3.5" /> Standup
+          </span>
+        </button>
       </div>
 
-      <p className="text-center text-[11px] font-mono text-neutral-600 mt-3">
-        <kbd className="px-1 py-0.5 bg-white/5 rounded border border-white/10">1-4</kbd> grade ·{" "}
-        <kbd className="px-1 py-0.5 bg-white/5 rounded border border-white/10">Space</kbd> skip ·{" "}
-        <kbd className="px-1 py-0.5 bg-white/5 rounded border border-white/10">P</kbd> pronounce ·{" "}
-        <kbd className="px-1 py-0.5 bg-white/5 rounded border border-white/10">⌘K</kbd> search ·{" "}
-        <kbd className="px-1 py-0.5 bg-white/5 rounded border border-white/10">⌘B</kbd> bookmarks
-      </p>
+      {view === "study" ? (
+        <>
+        {word && (
+          <FlashCard
+            key={`${word.id}-${bkTick}-${lrTick}`}
+            word={word}
+            mode={mode}
+            bookmarked={isBookmarked(word.id)}
+            learned={isLearned(word.id)}
+            onToggleBookmark={handleToggleBookmark}
+            onToggleLearned={handleToggleLearned}
+            onReview={reviewWord}
+          />
+        )}
+
+        {/* SM-2 grading bar */}
+        <div className="mt-6 grid grid-cols-4 gap-2">
+          {[
+            { g: 1, label: "Again", kbd: "1", cls: "text-red-400 border-red-500/30 hover:border-red-400/60" },
+            { g: 2, label: "Hard", kbd: "2", cls: "text-amber-accent border-amber-accent/30 hover:border-amber-accent/60" },
+            { g: 3, label: "Good", kbd: "3", cls: "text-emerald-accent border-emerald-accent/30 hover:border-emerald-accent/60" },
+            { g: 4, label: "Easy", kbd: "4", cls: "text-cyan-400 border-cyan-400/30 hover:border-cyan-400/60" },
+          ].map((b) => (
+            <button
+              key={b.g}
+              onClick={() => reviewWord(b.g)}
+              disabled={loading}
+              className={`flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-lg border bg-white/[0.03] text-sm font-medium transition-all cursor-pointer disabled:opacity-40 hover:bg-white/[0.06] ${b.cls}`}
+            >
+              <span>{b.label}</span>
+              <kbd className="text-[10px] px-1 py-px border border-white/10 rounded text-neutral-600">{b.kbd}</kbd>
+            </button>
+          ))}
+        </div>
+
+        <p className="text-center text-[11px] font-mono text-neutral-600 mt-3">
+          <kbd className="px-1 py-0.5 bg-white/5 rounded border border-white/10">1-4</kbd> grade ·{" "}
+          <kbd className="px-1 py-0.5 bg-white/5 rounded border border-white/10">Space</kbd> skip ·{" "}
+          <kbd className="px-1 py-0.5 bg-white/5 rounded border border-white/10">P</kbd> pronounce ·{" "}
+          <kbd className="px-1 py-0.5 bg-white/5 rounded border border-white/10">R</kbd> speak ·{" "}
+          <kbd className="px-1 py-0.5 bg-white/5 rounded border border-white/10">⌘K</kbd> search ·{" "}
+          <kbd className="px-1 py-0.5 bg-white/5 rounded border border-white/10">⌘B</kbd> bookmarks
+        </p>
+        </>
+      ) : (
+        <StandupSimulator />
+      )}
 
       <SearchModal
         open={searchOpen}

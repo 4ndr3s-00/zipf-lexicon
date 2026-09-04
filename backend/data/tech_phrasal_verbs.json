@@ -1,0 +1,202 @@
+[
+  {
+    "expression": "push back",
+    "definition_en": "To challenge or resist a decision, request, or timeline.",
+    "translation_es": "Opinar en contra / rechazar / poner resistencia",
+    "category": "negotiation",
+    "example": "I had to push back on the deadline because the feature isn't ready.",
+    "standup": true
+  },
+  {
+    "expression": "trade-off",
+    "definition_en": "A balance achieved between two desirable but incompatible features.",
+    "translation_es": "Compromiso / contraposición",
+    "category": "decision",
+    "example": "There's always a trade-off between performance and readability.",
+    "standup": true
+  },
+  {
+    "expression": "under the hood",
+    "definition_en": "The internal implementation details hidden from the user.",
+    "translation_es": "Por debajo / internamente",
+    "category": "architecture",
+    "example": "Under the hood, the service caches responses for better latency.",
+    "standup": true
+  },
+  {
+    "expression": "LGTM",
+    "definition_en": "Looks good to me. Approved in code review.",
+    "translation_es": "Me parece bien / aprobado",
+    "category": "review",
+    "example": "The PR is clean — LGTM, go ahead and merge.",
+    "standup": true
+  },
+  {
+    "expression": "bottleneck",
+    "definition_en": "The slowest point in a system that limits overall throughput.",
+    "translation_es": "Cuello de botella",
+    "category": "performance",
+    "example": "The database query is our main bottleneck right now.",
+    "standup": true
+  },
+  {
+    "expression": "edge case",
+    "definition_en": "An unusual input or scenario that might break normal logic.",
+    "translation_es": "Caso límite / caso borde",
+    "category": "testing",
+    "example": "We need to handle the edge case where the payload is empty.",
+    "standup": true
+  },
+  {
+    "expression": "spin up",
+    "definition_en": "To start or provision a new service, server, or environment.",
+    "translation_es": "Levantar / poner en marcha",
+    "category": "infrastructure",
+    "example": "I spun up a staging instance to test the migration.",
+    "standup": true
+  },
+  {
+    "expression": "roll back",
+    "definition_en": "To revert a change or deployment to a previous state.",
+    "translation_es": "Revertir / dar marcha atrás",
+    "category": "deployment",
+    "example": "We rolled back the release after seeing the crash rate spike.",
+    "standup": true
+  },
+  {
+    "expression": "follow up",
+    "definition_en": "To check on progress or revisit a topic later.",
+    "translation_es": "Dar seguimiento / volver a preguntar",
+    "category": "communication",
+    "example": "I'll follow up with the platform team about the API keys.",
+    "standup": true
+  },
+  {
+    "expression": "loop in",
+    "definition_en": "To include someone in a conversation or email thread.",
+    "translation_es": "Incluir / poner al tanto",
+    "category": "communication",
+    "example": "Let me loop in Sarah so she's aware of the change.",
+    "standup": true
+  },
+  {
+    "expression": "circle back",
+    "definition_en": "To return to a topic or person later in the conversation.",
+    "translation_es": "Volver sobre el tema / retomar",
+    "category": "communication",
+    "example": "I'll circle back once I have more details on the timeline.",
+    "standup": true
+  },
+  {
+    "expression": "bandwidth",
+    "definition_en": "The time or capacity someone has available to do work.",
+    "translation_es": "Capacidad / disponibilidad",
+    "category": "communication",
+    "example": "I don't have the bandwidth to pick up that task this week.",
+    "standup": true
+  },
+  {
+    "expression": "scope creep",
+    "definition_en": "When a project's requirements grow beyond the original plan.",
+    "translation_es": "Ampliación no controlada del alcance",
+    "category": "project",
+    "example": "We should watch for scope creep on this sprint.",
+    "standup": true
+  },
+  {
+    "expression": "blocked",
+    "definition_en": "Unable to continue until a dependency or issue is resolved.",
+    "translation_es": "Bloqueado / atascado",
+    "category": "standup",
+    "example": "I'm blocked on the design review for the new dashboard.",
+    "standup": true
+  },
+  {
+    "expression": "nit",
+    "definition_en": "A minor, non-blocking comment in a code review.",
+    "translation_es": "Detalle menor / pulir",
+    "category": "review",
+    "example": "Just a nit — consider renaming that variable for clarity.",
+    "standup": true
+  },
+  {
+    "expression": "yak shaving",
+    "definition_en": "Doing small unrelated tasks that delay the real work.",
+    "translation_es": "Perder tiempo en tareas secundarias",
+    "category": "communication",
+    "example": "I spent the morning yak shaving on tooling instead of shipping.",
+    "standup": true
+  },
+  {
+    "expression": "out of the box",
+    "definition_en": "Working immediately without configuration or setup.",
+    "translation_es": "Funciona de inmediato / de fábrica",
+    "category": "architecture",
+    "example": "The library handles caching out of the box.",
+    "standup": true
+  },
+  {
+    "expression": "down the line",
+    "definition_en": "At some point in the future.",
+    "translation_es": "Más adelante / a futuro",
+    "category": "project",
+    "example": "We might refactor this down the line, but it works now.",
+    "standup": true
+  },
+  {
+    "expression": "on the same page",
+    "definition_en": "In agreement or with shared understanding.",
+    "translation_es": "Estar alineados / de acuerdo",
+    "category": "communication",
+    "example": "Let's make sure we're on the same page before writing code.",
+    "standup": true
+  },
+  {
+    "expression": "ship it",
+    "definition_en": "To release or deploy something to production.",
+    "translation_es": "Enviarlo / lanzarlo a producción",
+    "category": "deployment",
+    "example": "Tests pass and the review is done — ship it.",
+    "standup": true
+  },
+  {
+    "expression": "hitting a wall",
+    "definition_en": "Encountering a hard obstacle that slows progress.",
+    "translation_es": "Chocar con un muro / atorarse",
+    "category": "communication",
+    "example": "I keep hitting a wall with the flaky integration tests.",
+    "standup": true
+  },
+  {
+    "expression": "back burner",
+    "definition_en": "A task postponed or deprioritized for now.",
+    "translation_es": "En segundo plano / pospuesto",
+    "category": "communication",
+    "example": "That refactor is on the back burner until the release.",
+    "standup": true
+  },
+  {
+    "expression": "wheel-spinning",
+    "definition_en": "Working hard but making no real progress.",
+    "translation_es": "Dar vueltas sin avanzar",
+    "category": "communication",
+    "example": "I felt like I was wheel-spinning on the config issue all day.",
+    "standup": true
+  },
+  {
+    "expression": "peel back",
+    "definition_en": "To gradually reveal or uncover layers of a problem.",
+    "translation_es": "Ir desentrañando / destapando",
+    "category": "communication",
+    "example": "As we peel back the layers, the root cause becomes clearer.",
+    "standup": true
+  },
+  {
+    "expression": "sandbox",
+    "definition_en": "An isolated environment for testing without side effects.",
+    "translation_es": "Entorno aislado / de pruebas",
+    "category": "infrastructure",
+    "example": "I reproduced the bug in a sandbox before touching prod.",
+    "standup": true
+  }
+]

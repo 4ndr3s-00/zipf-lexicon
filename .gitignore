@@ -9,8 +9,8 @@ venv/
 *.db
 *.sqlite3
 
-# Downloaded runtime datasets (Tatoeba WordNet corpuses)
-backend/data/
+# Downloaded runtime datasets (Tatoeba corpus, re-fetched by scripts)
+backend/data/tatoeba/
 
 # Node
 node_modules/
