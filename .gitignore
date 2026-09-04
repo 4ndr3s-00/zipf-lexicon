@@ -9,6 +9,9 @@ venv/
 *.db
 *.sqlite3
 
+# Downloaded runtime datasets (Tatoeba WordNet corpuses)
+backend/data/
+
 # Node
 node_modules/
 dist/
