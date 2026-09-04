@@ -3,7 +3,6 @@ import Shell from "./Shell";
 import FlashCard from "./components/FlashCard";
 import SearchModal from "./components/SearchModal";
 import BookmarksModal from "./components/BookmarksModal";
-import { MODES } from "./config/modes";
 import {
   getBookmarked,
   isBookmarked,
@@ -94,7 +93,37 @@ function App() {
     setLrTick((t) => t + 1);
   };
 
-  const cfg = MODES[mode];
+  const reviewWord = useCallback(
+    async (grade) => {
+      if (!word || loading) return;
+      setLoading(true);
+      try {
+        await fetch(`http://localhost:8001/api/words/${word.id}/review`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ grade }),
+        });
+      } catch {
+        // non-fatal; still advance
+      } finally {
+        fetchWord();
+      }
+    },
+    [word, loading, fetchWord],
+  );
+
+  // Keys 1-4 -> SM-2 grade (only when modals are closed)
+  useEffect(() => {
+    if (searchOpen || bookmarksOpen) return;
+    const handler = (e) => {
+      const g = parseInt(e.key, 10);
+      if (!Number.isNaN(g) && g >= 1 && g <= 4) {
+        reviewWord(g);
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [searchOpen, bookmarksOpen, reviewWord]);
 
   return (
     <Shell
@@ -113,23 +142,33 @@ function App() {
           learned={isLearned(word.id)}
           onToggleBookmark={handleToggleBookmark}
           onToggleLearned={handleToggleLearned}
+          onReview={reviewWord}
         />
       )}
 
-      {/* Next button */}
-      <div className="mt-6 flex justify-center">
-        <button
-          onClick={() => fetchWord()}
-          disabled={loading}
-          className={`px-6 py-2.5 rounded-lg border text-sm font-medium transition-all cursor-pointer disabled:opacity-40 ${cfg.btnClass}`}
-        >
-          {loading ? "Loading..." : "Next Word →"}
-        </button>
+      {/* SM-2 grading bar */}
+      <div className="mt-6 grid grid-cols-4 gap-2">
+        {[
+          { g: 1, label: "Again", kbd: "1", cls: "text-red-400 border-red-500/30 hover:border-red-400/60" },
+          { g: 2, label: "Hard", kbd: "2", cls: "text-amber-accent border-amber-accent/30 hover:border-amber-accent/60" },
+          { g: 3, label: "Good", kbd: "3", cls: "text-emerald-accent border-emerald-accent/30 hover:border-emerald-accent/60" },
+          { g: 4, label: "Easy", kbd: "4", cls: "text-cyan-400 border-cyan-400/30 hover:border-cyan-400/60" },
+        ].map((b) => (
+          <button
+            key={b.g}
+            onClick={() => reviewWord(b.g)}
+            disabled={loading}
+            className={`flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-lg border bg-white/[0.03] text-sm font-medium transition-all cursor-pointer disabled:opacity-40 hover:bg-white/[0.06] ${b.cls}`}
+          >
+            <span>{b.label}</span>
+            <kbd className="text-[10px] px-1 py-px border border-white/10 rounded text-neutral-600">{b.kbd}</kbd>
+          </button>
+        ))}
       </div>
 
       <p className="text-center text-[11px] font-mono text-neutral-600 mt-3">
-        <kbd className="px-1 py-0.5 bg-white/5 rounded border border-white/10">Space</kbd> or{" "}
-        <kbd className="px-1 py-0.5 bg-white/5 rounded border border-white/10">→</kbd> next ·{" "}
+        <kbd className="px-1 py-0.5 bg-white/5 rounded border border-white/10">1-4</kbd> grade ·{" "}
+        <kbd className="px-1 py-0.5 bg-white/5 rounded border border-white/10">Space</kbd> skip ·{" "}
         <kbd className="px-1 py-0.5 bg-white/5 rounded border border-white/10">P</kbd> pronounce ·{" "}
         <kbd className="px-1 py-0.5 bg-white/5 rounded border border-white/10">⌘K</kbd> search ·{" "}
         <kbd className="px-1 py-0.5 bg-white/5 rounded border border-white/10">⌘B</kbd> bookmarks

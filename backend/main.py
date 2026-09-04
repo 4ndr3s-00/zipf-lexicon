@@ -1,10 +1,12 @@
 from fastapi import FastAPI, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from sqlmodel import Session, func, select, col
 
 from database import create_db_and_tables, get_session
 from models import Word
-from services.selection import load_words, pick_weighted
+from services.selection import load_words, pick_weighted, mark_reviewed
+from services.srs import review
 
 app = FastAPI(title="Zipf Lexicon API")
 
@@ -42,6 +44,29 @@ def word_count(session: Session = Depends(get_session)):
 @app.get("/api/words/next")
 def word_next(mode: str = Query(..., pattern="^(cotidiano|tecnico)$")):
     return pick_weighted(mode)
+
+
+class ReviewRequest(BaseModel):
+    grade: int  # 1=Again 2=Hard 3=Good 4=Easy
+
+
+@app.post("/api/words/{word_id}/review")
+def word_review(
+    word_id: int,
+    body: ReviewRequest,
+    session: Session = Depends(get_session),
+):
+    if body.grade not in (1, 2, 3, 4):
+        raise HTTPException(status_code=400, detail="grade must be 1, 2, 3 or 4")
+    word = session.get(Word, word_id)
+    if not word:
+        raise HTTPException(status_code=404, detail="Word not found")
+    result = review(word, body.grade)
+    session.add(word)
+    session.commit()
+    session.refresh(word)
+    mark_reviewed(word.id, word.next_review)
+    return {"id": word.id, "word": word.word, **result}
 
 
 @app.get("/api/words/search")
